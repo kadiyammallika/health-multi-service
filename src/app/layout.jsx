@@ -4,7 +4,7 @@ import Footer from '@/components/layout/Footer';
 import RoleSwitcher from '@/components/layout/RoleSwitcher';
 
 export const metadata = {
-  title: 'AuraLife | Unified Living, Travel & Wellness Marketplace',
+  title: 'OneConnect | Multi-Service Living, Travel & Wellness Marketplace',
   description: 'Book flights, buses, luxury hotels, holistic wellness sessions, and explore premium real estate properties in one unified platform.',
 };
 

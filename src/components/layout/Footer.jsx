@@ -15,7 +15,7 @@ export default function Footer() {
                 <Sparkles className="w-5 h-5 text-teal-200" />
               </div>
               <span className="text-xl font-black tracking-tight text-white">
-                Aura<span className="text-indigo-400">Life</span>
+                One<span className="text-indigo-400">Connect</span>
               </span>
             </Link>
             <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
@@ -102,7 +102,7 @@ export default function Footer() {
         {/* Bottom Disclaimer */}
         <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
           <div>
-            © {new Date().getFullYear()} AuraLife Multi-Service Marketplace. Designed for commercial-grade living, wellness & travel discovery.
+            © {new Date().getFullYear()} OneConnect Multi-Service Marketplace. Designed for commercial-grade living, wellness & travel discovery.
           </div>
           <div className="flex items-center gap-4 text-slate-400">
             <span>Client-Side LocalStorage Architecture</span>

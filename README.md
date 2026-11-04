@@ -1,8 +1,32 @@
-# AuraLife - Multi-Service Digital Living, Travel & Wellness Marketplace
+# OneConnect - Multi-Service Digital Living, Travel & Wellness Marketplace
 
 > **Commercial-Grade Multi-Service Digital Platform Built with Next.js (App Router), JavaScript/JSX, and Tailwind CSS.**
 
-AuraLife brings together essential lifestyle, travel, and holistic health services into a unified application. Customers can discover, compare, book, simulate payment, and manage services with a single account.
+OneConnect brings together essential lifestyle, travel, and holistic health services into a unified application. Customers can discover, compare, book, simulate payment, and manage services with a single account.
+
+---
+
+## 🔐 Three-Role Authentication System
+
+OneConnect features a role-based login system for three user types with distinct dashboard routing, route protection, and credential validation:
+
+### 1. Supported Roles & Demo Accounts
+
+| Role | Demo Email | Demo Password | Redirected Dashboard |
+| :--- | :--- | :--- | :--- |
+| **👤 Customer** | `customer@oneconnect.com` | `Password123!` | `/dashboard/customer` |
+| **🩺 Service Provider** | `provider@oneconnect.com` | `Password123!` | `/dashboard/provider` |
+| **🛡️ Administrator** | `admin@oneconnect.com` | `Password123!` | `/dashboard/admin` |
+
+### 2. Login Page Capabilities (`/login`)
+- **Role Tabs**: Three highlighted login tabs (`Customer Login`, `Provider Login`, `Admin Login`).
+- **Show/Hide Password**: Integrated eye icon for toggling password visibility.
+- **Remember Me**: Saves the email on the browser for quick return visits.
+- **Forgot Password Modal**: Interactive simulation modal for password recovery.
+- **Role Mismatch Detection**: If a customer email tries to log in under the Provider or Admin tab, a clear warning guides the user to the correct tab.
+- **1-Click Demo Credentials Card**: Click any demo account card to automatically populate credentials and select the correct role tab.
+- **Route Protection (`AuthGuard`)**: Direct access to `/dashboard/*` requires an active session with the correct role. Cross-role boundary attempts display a restriction warning with a quick return button.
+- **Sign Out**: Available in the Navbar, top Role Switcher bar, and all dashboards. It clears the session and returns to `/login`.
 
 ---
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   ShieldAlert,
   Users,
@@ -18,18 +19,22 @@ import {
   Check,
   X,
   Search,
-  Filter
+  Filter,
+  LogOut
 } from 'lucide-react';
 import {
   getPartners,
   updatePartnerStatus,
   getBookings,
   getWellnessAppointments,
-  getPropertyEnquiries
+  getPropertyEnquiries,
+  logoutUser
 } from '@/services/storage';
 import Badge from '@/components/ui/Badge';
+import AuthGuard from '@/components/auth/AuthGuard';
 
 export default function AdminDashboardPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('partners'); // 'partners', 'bookings', 'categories', 'metrics'
   const [partners, setPartners] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -74,32 +79,46 @@ export default function AdminDashboardPage() {
   const totalGMV = bookings.reduce((sum, b) => sum + (b.totalAmount || 0), 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Admin Header */}
-        <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-amber-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-amber-300">
-              <ShieldAlert className="w-8 h-8" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-white">Administrator Command Console</h1>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/30">
-                  Super Admin
-                </span>
+    <AuthGuard allowedRole="admin" roleTitle="Administrator">
+      <div className="min-h-screen bg-slate-50 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          {/* Admin Header */}
+          <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-amber-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-amber-300">
+                <ShieldAlert className="w-8 h-8" />
               </div>
-              <p className="text-xs text-slate-300 mt-0.5">Platform Auditing • Partner Licensing • Central Ledger</p>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-bold text-white">Administrator Command Console</h1>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                    Super Admin
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 mt-0.5">Platform Auditing • Partner Licensing • Central Ledger</p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-xs text-emerald-400 font-semibold bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-500/30 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                All 5 Verticals Operational
+              </span>
+
+              <button
+                type="button"
+                onClick={() => {
+                  logoutUser();
+                  router.push('/login');
+                }}
+                className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition flex items-center gap-1.5 border border-white/10"
+                title="Sign Out of Admin Account"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Log Out</span>
+              </button>
             </div>
           </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-emerald-400 font-semibold bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-500/30 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              All 5 Verticals Operational
-            </span>
-          </div>
-        </div>
 
         {/* METRICS GRID */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
@@ -316,5 +335,6 @@ export default function AdminDashboardPage() {
         )}
       </div>
     </div>
+  </AuthGuard>
   );
 }

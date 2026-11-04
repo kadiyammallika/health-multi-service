@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   User,
   Ticket,
@@ -20,19 +21,23 @@ import {
   Plane,
   Bus,
   Building2,
-  Trash2
+  Trash2,
+  LogOut
 } from 'lucide-react';
 import {
   getCurrentUser,
   getBookings,
   getWellnessAppointments,
   getPropertyEnquiries,
-  cancelBooking
+  cancelBooking,
+  logoutUser
 } from '@/services/storage';
 import Badge from '@/components/ui/Badge';
 import TicketModal from '@/components/ui/TicketModal';
+import AuthGuard from '@/components/auth/AuthGuard';
 
 export default function CustomerDashboardPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'bookings', 'wellness', 'enquiries', 'payments', 'profile'
   const [user, setUser] = useState(null);
   const [bookings, setBookings] = useState([]);
@@ -71,7 +76,8 @@ export default function CustomerDashboardPage() {
   const pendingWellnessCount = wellnessAppointments.filter((w) => w.status === 'Pending').length;
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <AuthGuard allowedRole="customer" roleTitle="Customer">
+      <div className="min-h-screen bg-slate-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Profile Welcome Banner */}
         <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
@@ -100,6 +106,19 @@ export default function CustomerDashboardPage() {
             >
               + New Booking
             </Link>
+
+            <button
+              type="button"
+              onClick={() => {
+                logoutUser();
+                router.push('/login');
+              }}
+              className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition flex items-center gap-1.5 border border-white/10"
+              title="Sign Out of Customer Account"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Log Out</span>
+            </button>
           </div>
         </div>
 
@@ -461,5 +480,6 @@ export default function CustomerDashboardPage() {
         booking={selectedTicket}
       />
     </div>
+  </AuthGuard>
   );
 }

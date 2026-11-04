@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Stethoscope,
   Calendar,
@@ -18,18 +19,22 @@ import {
   Home,
   Building2,
   MessageSquare,
-  FileCheck
+  FileCheck,
+  LogOut
 } from 'lucide-react';
 import {
   getCurrentUser,
   getWellnessAppointments,
   updateWellnessAppointmentStatus,
   getPropertyEnquiries,
-  getBookings
+  getBookings,
+  logoutUser
 } from '@/services/storage';
 import Badge from '@/components/ui/Badge';
+import AuthGuard from '@/components/auth/AuthGuard';
 
 export default function ProviderDashboardPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('appointments'); // 'appointments', 'enquiries', 'availability', 'profile'
   const [appointments, setAppointments] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
@@ -71,48 +76,64 @@ export default function ProviderDashboardPage() {
   const confirmedAppointments = appointments.filter((a) => a.status === 'Confirmed');
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Provider Profile Banner */}
-        <div className="bg-gradient-to-r from-teal-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <img
-              src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80"
-              alt="Dr. Aarav Patel"
-              className="w-16 h-16 rounded-2xl object-cover border-2 border-teal-400/40"
-            />
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-white">Dr. Aarav Patel, BAMS, MD</h1>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-teal-500/20 text-teal-300 border border-teal-400/30">
-                  Verified Healer
-                </span>
+    <AuthGuard allowedRole="provider" roleTitle="Service Provider">
+      <div className="min-h-screen bg-slate-50 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          {/* Provider Profile Banner */}
+          <div className="bg-gradient-to-r from-teal-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <img
+                src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80"
+                alt="Dr. Aarav Patel"
+                className="w-16 h-16 rounded-2xl object-cover border-2 border-teal-400/40"
+              />
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-bold text-white">Dr. Aarav Patel, BAMS, MD</h1>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-teal-500/20 text-teal-300 border border-teal-400/30">
+                    Verified Healer
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 mt-0.5">Zenith Ayurvedic & Holistic Healing • Reg # AYUSH-2018-994</p>
+                <div className="text-[11px] text-teal-300 mt-1">Specialization: Ayurvedic Medicine & Panchakarma Detox</div>
               </div>
-              <p className="text-xs text-slate-300 mt-0.5">Zenith Ayurvedic & Holistic Healing • Reg # AYUSH-2018-994</p>
-              <div className="text-[11px] text-teal-300 mt-1">Specialization: Ayurvedic Medicine & Panchakarma Detox</div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-3 bg-white/10 px-4 py-2.5 rounded-2xl border border-white/10 text-xs">
+                <span>Accepting New Appointments:</span>
+                <button
+                  onClick={() => setIsAcceptingBookings(!isAcceptingBookings)}
+                  className="font-bold flex items-center gap-1 text-teal-300"
+                >
+                  {isAcceptingBookings ? (
+                    <>
+                      <ToggleRight className="w-6 h-6 text-emerald-400" />
+                      <span>ONLINE</span>
+                    </>
+                  ) : (
+                    <>
+                      <ToggleLeft className="w-6 h-6 text-slate-400" />
+                      <span>PAUSED</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  logoutUser();
+                  router.push('/login');
+                }}
+                className="px-3.5 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition flex items-center gap-1.5 border border-white/10"
+                title="Sign Out of Provider Account"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Log Out</span>
+              </button>
             </div>
           </div>
-
-          <div className="flex items-center gap-3 bg-white/10 px-4 py-2.5 rounded-2xl border border-white/10 text-xs">
-            <span>Accepting New Appointments:</span>
-            <button
-              onClick={() => setIsAcceptingBookings(!isAcceptingBookings)}
-              className="font-bold flex items-center gap-1 text-teal-300"
-            >
-              {isAcceptingBookings ? (
-                <>
-                  <ToggleRight className="w-6 h-6 text-emerald-400" />
-                  <span>ONLINE</span>
-                </>
-              ) : (
-                <>
-                  <ToggleLeft className="w-6 h-6 text-slate-400" />
-                  <span>PAUSED</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
 
         {/* Dashboard Navigation Tabs */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200 text-xs font-bold">
@@ -349,5 +370,6 @@ export default function ProviderDashboardPage() {
         )}
       </div>
     </div>
+  </AuthGuard>
   );
 }

@@ -1,8 +1,11 @@
-// Unified Storage and Demo Database Engine for AuraLife
+// Unified Storage and Demo Database Engine for OneConnect
 // Provides localStorage persistence, real-time sync across components, and realistic seed data
 
 const STORAGE_KEYS = {
-  CURRENT_USER: 'auralife_current_user',
+  CURRENT_USER: 'oneconnect_current_user',
+  LEGACY_CURRENT_USER: 'auralife_current_user',
+  USERS: 'oneconnect_users',
+  REMEMBER_EMAIL: 'oneconnect_remember_email',
   BOOKINGS: 'auralife_bookings',
   WELLNESS: 'auralife_wellness',
   ENQUIRIES: 'auralife_enquiries',
@@ -10,37 +13,50 @@ const STORAGE_KEYS = {
   NOTIFICATIONS: 'auralife_notifications',
 };
 
-// Seed accounts for 1-click role testing
-export const DEMO_USERS = {
-  customer: {
+// Default credentials for the three roles (displayed in the Demo Login section)
+export const DEFAULT_DEMO_ACCOUNTS = [
+  {
     id: 'USR-CUST-1',
     name: 'Alex Morgan',
-    email: 'alex.morgan@example.com',
+    email: 'customer@oneconnect.com',
+    alternateEmails: ['alex.morgan@example.com'],
+    password: 'Password123!',
     phone: '+91 98765 43210',
     role: 'customer',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
     memberSince: 'Jan 2025'
   },
-  provider: {
+  {
     id: 'PRAC-001',
     name: 'Dr. Aarav Patel',
     businessName: 'Zenith Ayurvedic & Holistic Healing',
-    email: 'dr.aarav@zenithwellness.com',
+    email: 'provider@oneconnect.com',
+    alternateEmails: ['dr.aarav@zenithwellness.com'],
+    password: 'Password123!',
     phone: '+91 98111 22334',
     role: 'provider',
     category: 'wellness',
     avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80',
     status: 'Verified Partner'
   },
-  admin: {
+  {
     id: 'USR-ADM-99',
     name: 'Sarah Jenkins (Admin)',
-    email: 'admin@auralife.com',
+    email: 'admin@oneconnect.com',
+    alternateEmails: ['admin@auralife.com'],
+    password: 'Password123!',
     phone: '+91 99000 88776',
     role: 'admin',
     avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80',
     badge: 'Super Administrator'
   }
+];
+
+// Seed accounts for 1-click role testing
+export const DEMO_USERS = {
+  customer: DEFAULT_DEMO_ACCOUNTS[0],
+  provider: DEFAULT_DEMO_ACCOUNTS[1],
+  admin: DEFAULT_DEMO_ACCOUNTS[2],
 };
 
 // Realistic initial bookings
@@ -274,9 +290,20 @@ function notifyStorageChange() {
 export function initializeStorage() {
   if (typeof window === 'undefined') return;
 
-  if (!localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) {
-    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(DEMO_USERS.customer));
+  // Initialize Users list with default demo accounts if not set
+  if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(DEFAULT_DEMO_ACCOUNTS));
   }
+
+  // Session user: if not set and user has not explicitly logged out, seed default customer
+  const hasLoggedOut = localStorage.getItem('oneconnect_logged_out');
+  const existingUser = localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || localStorage.getItem(STORAGE_KEYS.LEGACY_CURRENT_USER);
+  if (!existingUser && !hasLoggedOut) {
+    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(DEMO_USERS.customer));
+  } else if (existingUser && !localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) {
+    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, existingUser);
+  }
+
   if (!localStorage.getItem(STORAGE_KEYS.BOOKINGS)) {
     localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(INITIAL_BOOKINGS));
   }
@@ -294,16 +321,178 @@ export function initializeStorage() {
   }
 }
 
-// Authentication / User Session Helpers
+// Authentication & Role-Based Session Helpers
+
+export function getDashboardUrl(role) {
+  switch (role) {
+    case 'provider':
+      return '/dashboard/provider';
+    case 'admin':
+      return '/dashboard/admin';
+    case 'customer':
+    default:
+      return '/dashboard/customer';
+  }
+}
+
+export function getUsers() {
+  if (typeof window === 'undefined') return DEFAULT_DEMO_ACCOUNTS;
+  initializeStorage();
+  const raw = localStorage.getItem(STORAGE_KEYS.USERS);
+  if (!raw) return DEFAULT_DEMO_ACCOUNTS;
+  try {
+    const parsed = JSON.parse(raw);
+    // Ensure demo accounts always exist and are up to date
+    const merged = [...parsed];
+    DEFAULT_DEMO_ACCOUNTS.forEach((demo) => {
+      const exists = merged.some(
+        (u) =>
+          u.email.toLowerCase() === demo.email.toLowerCase() ||
+          (u.alternateEmails && u.alternateEmails.some((ae) => demo.alternateEmails.includes(ae)))
+      );
+      if (!exists) {
+        merged.unshift(demo);
+      }
+    });
+    return merged;
+  } catch {
+    return DEFAULT_DEMO_ACCOUNTS;
+  }
+}
+
 export function getCurrentUser() {
-  if (typeof window === 'undefined') return DEMO_USERS.customer;
-  const user = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
-  return user ? JSON.parse(user) : DEMO_USERS.customer;
+  if (typeof window === 'undefined') return null;
+  initializeStorage();
+  if (localStorage.getItem('oneconnect_logged_out') === 'true') {
+    return null;
+  }
+  const user = localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || localStorage.getItem(STORAGE_KEYS.LEGACY_CURRENT_USER);
+  return user ? JSON.parse(user) : null;
+}
+
+export function authenticateUser(email, password, expectedRole) {
+  if (typeof window === 'undefined') return { success: false, error: 'Browser environment required.' };
+
+  const cleanEmail = (email || '').trim().toLowerCase();
+  const cleanPass = password || '';
+
+  if (!cleanEmail) {
+    return { success: false, error: 'Email address is required.' };
+  }
+  if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+    return { success: false, error: 'Please enter a valid email address.' };
+  }
+  if (!cleanPass) {
+    return { success: false, error: 'Password is required.' };
+  }
+
+  const users = getUsers();
+  const matchedUser = users.find((u) => {
+    const mainMatch = (u.email || '').toLowerCase() === cleanEmail;
+    const altMatch = Array.isArray(u.alternateEmails) && u.alternateEmails.some((ae) => ae.toLowerCase() === cleanEmail);
+    return mainMatch || altMatch;
+  });
+
+  if (!matchedUser) {
+    return {
+      success: false,
+      error: 'No account found with this email address. Please check your credentials or register.'
+    };
+  }
+
+  // Check role mismatch
+  const roleLabels = {
+    customer: 'Customer',
+    provider: 'Service Provider',
+    admin: 'Administrator'
+  };
+
+  if (matchedUser.role !== expectedRole) {
+    const userRoleLabel = roleLabels[matchedUser.role] || matchedUser.role;
+    const expectedRoleLabel = roleLabels[expectedRole] || expectedRole;
+    return {
+      success: false,
+      roleMismatch: true,
+      userRole: matchedUser.role,
+      error: `Role Mismatch: This email belongs to a ${userRoleLabel} account, not an ${expectedRoleLabel}. Please click the "${userRoleLabel} Login" tab above to proceed.`
+    };
+  }
+
+  // Check password
+  if (matchedUser.password !== cleanPass) {
+    return {
+      success: false,
+      error: 'Invalid password. Please check your password and try again.'
+    };
+  }
+
+  // Login successful
+  localStorage.removeItem('oneconnect_logged_out');
+  setCurrentUser(matchedUser);
+
+  return {
+    success: true,
+    user: matchedUser,
+    redirectUrl: getDashboardUrl(matchedUser.role)
+  };
+}
+
+export function registerUser({ name, email, password, phone, role = 'customer', ...extra }) {
+  if (typeof window === 'undefined') return { success: false, error: 'Browser environment required.' };
+
+  const cleanEmail = (email || '').trim().toLowerCase();
+  if (!name || !name.trim()) {
+    return { success: false, error: 'Full legal name is required.' };
+  }
+  if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+    return { success: false, error: 'Valid email address is required.' };
+  }
+  if (!password || password.length < 6) {
+    return { success: false, error: 'Password must be at least 6 characters long.' };
+  }
+
+  const users = getUsers();
+  const exists = users.some(
+    (u) => (u.email || '').toLowerCase() === cleanEmail ||
+           (Array.isArray(u.alternateEmails) && u.alternateEmails.some((ae) => ae.toLowerCase() === cleanEmail))
+  );
+
+  if (exists) {
+    return { success: false, error: 'An account with this email address already exists. Please sign in instead.' };
+  }
+
+  const newUser = {
+    id: `USR-${Date.now().toString(36).toUpperCase()}`,
+    name: name.trim(),
+    email: cleanEmail,
+    password,
+    phone: phone || '',
+    role,
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    memberSince: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+    ...extra
+  };
+
+  const updatedUsers = [...users, newUser];
+  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(updatedUsers));
+  localStorage.removeItem('oneconnect_logged_out');
+  setCurrentUser(newUser);
+
+  return { success: true, user: newUser, redirectUrl: getDashboardUrl(role) };
+}
+
+export function logoutUser() {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+  localStorage.removeItem(STORAGE_KEYS.LEGACY_CURRENT_USER);
+  localStorage.setItem('oneconnect_logged_out', 'true');
+  notifyStorageChange();
 }
 
 export function switchRole(roleKey) {
   if (typeof window === 'undefined') return;
   const targetUser = DEMO_USERS[roleKey] || DEMO_USERS.customer;
+  localStorage.removeItem('oneconnect_logged_out');
   localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(targetUser));
   notifyStorageChange();
   return targetUser;
@@ -311,8 +500,27 @@ export function switchRole(roleKey) {
 
 export function setCurrentUser(userObj) {
   if (typeof window === 'undefined') return;
+  if (!userObj) {
+    logoutUser();
+    return;
+  }
+  localStorage.removeItem('oneconnect_logged_out');
   localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(userObj));
   notifyStorageChange();
+}
+
+export function getRememberedEmail() {
+  if (typeof window === 'undefined') return '';
+  return localStorage.getItem(STORAGE_KEYS.REMEMBER_EMAIL) || '';
+}
+
+export function setRememberedEmail(email, shouldRemember) {
+  if (typeof window === 'undefined') return;
+  if (shouldRemember && email) {
+    localStorage.setItem(STORAGE_KEYS.REMEMBER_EMAIL, email.trim());
+  } else {
+    localStorage.removeItem(STORAGE_KEYS.REMEMBER_EMAIL);
+  }
 }
 
 // Bookings (Flights, Buses, Hotels)
