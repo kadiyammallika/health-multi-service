@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-2.5">
+            <Link href="/" prefetch={false} className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 flex items-center justify-center text-white font-bold text-lg">
                 <Sparkles className="w-5 h-5 text-teal-200" />
               </div>
@@ -38,42 +38,33 @@ export default function Footer() {
             <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-3">Service Verticals</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/flights" className="hover:text-white transition">✈️ Flight Booking</Link>
+                <Link href="/flights" prefetch={false} className="hover:text-white transition">✈️ Flight Booking</Link>
               </li>
               <li>
-                <Link href="/buses" className="hover:text-white transition">🚌 Bus Travel & Sleeper</Link>
+                <Link href="/buses" prefetch={false} className="hover:text-white transition">🚌 Bus Travel & Sleeper</Link>
               </li>
               <li>
-                <Link href="/hotels" className="hover:text-white transition">🏨 Luxury Hotels & Spas</Link>
+                <Link href="/hotels" prefetch={false} className="hover:text-white transition">🏨 Luxury Hotels & Spas</Link>
               </li>
               <li>
-                <Link href="/wellness" className="hover:text-white transition">🌿 Alternative Wellness</Link>
+                <Link href="/wellness" prefetch={false} className="hover:text-white transition">🌿 Health & Healing</Link>
               </li>
               <li>
-                <Link href="/properties" className="hover:text-white transition">🏡 Buy & Rent Properties</Link>
+                <Link href="/properties" prefetch={false} className="hover:text-white transition">🏡 Buy & Rent Properties</Link>
               </li>
             </ul>
           </div>
 
-          {/* Platform Portals */}
+          {/* Quick Links */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-3">Portals & Access</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-3">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/dashboard/customer" className="hover:text-white transition">Customer Dashboard</Link>
+                <Link href="/bookings" prefetch={false} className="hover:text-white transition">My Bookings & Tickets</Link>
               </li>
               <li>
-                <Link href="/dashboard/provider" className="hover:text-white transition">Service Provider Portal</Link>
-              </li>
-              <li>
-                <Link href="/dashboard/admin" className="hover:text-white transition">Administrator Command</Link>
-              </li>
-              <li>
-                <Link href="/bookings" className="hover:text-white transition">My Bookings & Tickets</Link>
-              </li>
-              <li>
-                <Link href="/partner/register" className="text-teal-400 hover:text-teal-300 font-medium transition">
-                  ✨ Become a Partner
+                <Link href="/partner/register" prefetch={false} className="text-teal-400 hover:text-teal-300 font-medium transition">
+                  Become a Partner
                 </Link>
               </li>
             </ul>
@@ -102,7 +93,7 @@ export default function Footer() {
         {/* Bottom Disclaimer */}
         <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
           <div>
-            © {new Date().getFullYear()} OneConnect Multi-Service Marketplace. Designed for commercial-grade living, wellness & travel discovery.
+            © {new Date().getFullYear()} OneConnect Multi-Service Marketplace. Designed for commercial-grade living, health & healing, and travel discovery.
           </div>
           <div className="flex items-center gap-4 text-slate-400">
             <span>Client-Side LocalStorage Architecture</span>

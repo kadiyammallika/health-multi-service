@@ -13,271 +13,7 @@ const STORAGE_KEYS = {
   NOTIFICATIONS: 'auralife_notifications',
 };
 
-// Default credentials for the three roles (displayed in the Demo Login section)
-export const DEFAULT_DEMO_ACCOUNTS = [
-  {
-    id: 'USR-CUST-1',
-    name: 'Alex Morgan',
-    email: 'customer@oneconnect.com',
-    alternateEmails: ['alex.morgan@example.com'],
-    password: 'Password123!',
-    phone: '+91 98765 43210',
-    role: 'customer',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-    memberSince: 'Jan 2025'
-  },
-  {
-    id: 'PRAC-001',
-    name: 'Dr. Aarav Patel',
-    businessName: 'Zenith Ayurvedic & Holistic Healing',
-    email: 'provider@oneconnect.com',
-    alternateEmails: ['dr.aarav@zenithwellness.com'],
-    password: 'Password123!',
-    phone: '+91 98111 22334',
-    role: 'provider',
-    category: 'wellness',
-    avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80',
-    status: 'Verified Partner'
-  },
-  {
-    id: 'USR-ADM-99',
-    name: 'Sarah Jenkins (Admin)',
-    email: 'admin@oneconnect.com',
-    alternateEmails: ['admin@auralife.com'],
-    password: 'Password123!',
-    phone: '+91 99000 88776',
-    role: 'admin',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80',
-    badge: 'Super Administrator'
-  }
-];
-
-// Seed accounts for 1-click role testing
-export const DEMO_USERS = {
-  customer: DEFAULT_DEMO_ACCOUNTS[0],
-  provider: DEFAULT_DEMO_ACCOUNTS[1],
-  admin: DEFAULT_DEMO_ACCOUNTS[2],
-};
-
-// Realistic initial bookings
-const INITIAL_BOOKINGS = [
-  {
-    id: 'BKG-FL-8921',
-    type: 'flight',
-    categoryTitle: 'Flight Booking',
-    reference: 'FL-AS402-9921',
-    airline: 'AeroSky Air',
-    flightNumber: 'AS-402',
-    from: 'DEL',
-    to: 'BOM',
-    fromCity: 'New Delhi',
-    toCity: 'Mumbai',
-    date: '2026-11-12',
-    time: '06:15 AM - 08:30 AM',
-    passengers: [
-      { name: 'Alex Morgan', age: '32', gender: 'Female', seat: '12F' }
-    ],
-    contactEmail: 'alex.morgan@example.com',
-    contactPhone: '+91 98765 43210',
-    totalAmount: 5520,
-    fareBreakdown: {
-      baseFare: 4850,
-      taxes: 520,
-      convenienceFee: 150
-    },
-    status: 'Confirmed',
-    bookedAt: '2026-11-01T10:14:00Z',
-    paymentMethod: 'Credit Card (Simulated)'
-  },
-  {
-    id: 'BKG-BS-4402',
-    type: 'bus',
-    categoryTitle: 'Bus Booking',
-    reference: 'BUS-ZB-7734',
-    operator: 'Zingbus Royal Class',
-    busType: 'Volvo 9600 Multi-Axle A/C Sleeper (2+1)',
-    fromCity: 'New Delhi',
-    toCity: 'Jaipur',
-    date: '2026-11-18',
-    time: '10:30 PM - 04:30 AM',
-    selectedSeats: ['U3', 'U4'],
-    passengers: [
-      { name: 'Alex Morgan', age: '32', gender: 'Female', seat: 'U3' },
-      { name: 'Rohan Sharma', age: '34', gender: 'Male', seat: 'U4' }
-    ],
-    boardingPoint: 'Dhaula Kuan - 10:45 PM',
-    droppingPoint: 'Sindhi Camp Jaipur - 04:15 AM',
-    contactEmail: 'alex.morgan@example.com',
-    contactPhone: '+91 98765 43210',
-    totalAmount: 1850,
-    fareBreakdown: {
-      baseFare: 1700,
-      taxes: 90,
-      convenienceFee: 60
-    },
-    status: 'Confirmed',
-    bookedAt: '2026-11-02T14:22:00Z',
-    paymentMethod: 'UPI (Simulated)'
-  },
-  {
-    id: 'BKG-HTL-1190',
-    type: 'hotel',
-    categoryTitle: 'Hotel Reservation',
-    reference: 'HTL-HP-3392',
-    hotelName: 'The Heritage Palace & Royal Spa',
-    city: 'Jaipur, Rajasthan',
-    roomName: 'Deluxe Heritage Courtyard Room',
-    checkInDate: '2026-11-19',
-    checkOutDate: '2026-11-21',
-    nights: 2,
-    guestsCount: 2,
-    roomsCount: 1,
-    contactEmail: 'alex.morgan@example.com',
-    contactPhone: '+91 98765 43210',
-    totalAmount: 19890,
-    fareBreakdown: {
-      baseFare: 17000,
-      taxes: 2390,
-      resortFee: 500
-    },
-    status: 'Confirmed',
-    bookedAt: '2026-11-02T16:00:00Z',
-    paymentMethod: 'Net Banking (Simulated)'
-  }
-];
-
-// Initial wellness appointments demonstrating Pending & Confirmed statuses
-const INITIAL_WELLNESS_APPOINTMENTS = [
-  {
-    id: 'APT-WL-3011',
-    practitionerId: 'PRAC-001',
-    practitionerName: 'Dr. Aarav Patel, BAMS, MD (Ayu)',
-    category: 'ayurveda',
-    specialization: 'Ayurvedic Medicine & Chronic Dosha Detox',
-    patientName: 'Alex Morgan',
-    patientEmail: 'alex.morgan@example.com',
-    patientPhone: '+91 98765 43210',
-    date: '2026-11-08',
-    timeSlot: '11:30 AM',
-    consultationMode: 'Online Video Session',
-    duration: '45 mins',
-    price: 1200,
-    notes: 'Experiencing chronic fatigue, seeking personalized dietary & herbal routine.',
-    status: 'Pending', // Pending provider acceptance!
-    bookedAt: '2026-11-03T09:30:00Z'
-  },
-  {
-    id: 'APT-WL-3012',
-    practitionerId: 'PRAC-002',
-    practitionerName: 'Sunita Sharma, RYT 500',
-    category: 'yoga',
-    specialization: 'Therapeutic Hatha & Ashtanga Vinyasa',
-    patientName: 'Alex Morgan',
-    patientEmail: 'alex.morgan@example.com',
-    patientPhone: '+91 98765 43210',
-    date: '2026-11-10',
-    timeSlot: '07:00 AM',
-    consultationMode: 'Online 1-on-1 Video Session',
-    duration: '60 mins',
-    price: 850,
-    notes: 'Lower back stiffness relief posture focus.',
-    status: 'Confirmed',
-    bookedAt: '2026-11-02T11:15:00Z'
-  }
-];
-
-// Initial property enquiries (Separate from ticket bookings!)
-const INITIAL_ENQUIRIES = [
-  {
-    id: 'ENQ-9921',
-    propertyId: 'PROP-501',
-    propertyTitle: 'Serene Glasshouse Villa with Private Zen Pool',
-    propertyLocation: 'Siolim, North Goa',
-    purpose: 'buy',
-    priceDisplay: '₹3.85 Cr',
-    clientName: 'Alex Morgan',
-    clientEmail: 'alex.morgan@example.com',
-    clientPhone: '+91 98765 43210',
-    enquiryType: 'Site Visit & Inspection Request',
-    preferredDate: '2026-11-22',
-    preferredTime: 'Morning (10:00 AM)',
-    message: 'We are flying down to Goa and would love an in-person site walk-through with our architect.',
-    agentEmail: 'elena@primeestates.com',
-    agentName: 'Elena Vance - Prime Estates Realty',
-    status: 'Under Review',
-    createdAt: '2026-11-03T14:40:00Z'
-  }
-];
-
-// Initial partner registrations for admin verification workflow
-const INITIAL_PARTNERS = [
-  {
-    id: 'PTR-801',
-    businessName: 'Vayu Himalaya Air Charters',
-    category: 'travel',
-    categoryLabel: 'Aviation & Flight Partner',
-    contactPerson: 'Capt. R. K. Kapoor',
-    email: 'contact@vayuhimalaya.com',
-    phone: '+91 98101 44556',
-    licenseNumber: 'DGCA-OPR-94821',
-    yearsInBusiness: 6,
-    address: 'Terminal 1D Plaza, New Delhi',
-    appliedDate: '2026-11-02',
-    status: 'Pending Verification', // Admin can approve/reject
-    documentsUploaded: ['DGCA Certificate.pdf', 'Tax Compliance.pdf']
-  },
-  {
-    id: 'PTR-802',
-    businessName: 'Nirvana Holistics Retreat & Spa',
-    category: 'wellness',
-    categoryLabel: 'Wellness Practitioner / Retreat',
-    contactPerson: 'Dr. Kavita Namboodiri',
-    email: 'info@nirvanaholistics.in',
-    phone: '+91 97451 90876',
-    licenseNumber: 'AYUSH-NAT-2023-881',
-    yearsInBusiness: 8,
-    address: 'Kumarakom Backwaters, Kerala',
-    appliedDate: '2026-11-01',
-    status: 'Pending Verification',
-    documentsUploaded: ['AYUSH Board Registration.pdf', 'Clinic Permit.pdf']
-  },
-  {
-    id: 'PTR-803',
-    businessName: 'Zingbus Fleet Operations',
-    category: 'bus',
-    categoryLabel: 'Bus Operator Partner',
-    contactPerson: 'Vikram Malhotra',
-    email: 'fleet@zingbus.com',
-    phone: '+91 98991 12233',
-    licenseNumber: 'STA-DL-2020-552',
-    yearsInBusiness: 5,
-    address: 'Kashmere Gate, New Delhi',
-    appliedDate: '2026-10-25',
-    status: 'Approved',
-    documentsUploaded: ['Fleet Insurance.pdf', 'Permit.pdf']
-  }
-];
-
-const INITIAL_NOTIFICATIONS = [
-  {
-    id: 'NOTIF-1',
-    userId: 'USR-CUST-1',
-    title: 'Flight Booking Confirmed! ✈️',
-    message: 'Your flight AS-402 from New Delhi to Mumbai on Nov 12 is confirmed. Ref: FL-AS402-9921',
-    type: 'success',
-    timestamp: '2026-11-01T10:15:00Z',
-    read: false
-  },
-  {
-    id: 'NOTIF-2',
-    userId: 'USR-CUST-1',
-    title: 'Wellness Request Submitted 🌿',
-    message: 'Appointment request sent to Dr. Aarav Patel for Nov 8 at 11:30 AM. Status is Pending acceptance.',
-    type: 'info',
-    timestamp: '2026-11-03T09:31:00Z',
-    read: false
-  }
-];
+// No dummy data — all data comes from the Supabase database
 
 // Helpers for window event dispatching to ensure reactive UI
 function notifyStorageChange() {
@@ -286,45 +22,21 @@ function notifyStorageChange() {
   }
 }
 
-// Initialize seed data if not present
+// Initialize storage (minimal - just migrate legacy session)
 export function initializeStorage() {
   if (typeof window === 'undefined') return;
 
-  // Initialize Users list with default demo accounts if not set
-  if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
-    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(DEFAULT_DEMO_ACCOUNTS));
-  }
-
-  // Session user: if not set and user has not explicitly logged out, seed default customer
-  const hasLoggedOut = localStorage.getItem('oneconnect_logged_out');
-  const existingUser = localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || localStorage.getItem(STORAGE_KEYS.LEGACY_CURRENT_USER);
-  if (!existingUser && !hasLoggedOut) {
-    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(DEMO_USERS.customer));
-  } else if (existingUser && !localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) {
-    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, existingUser);
-  }
-
-  if (!localStorage.getItem(STORAGE_KEYS.BOOKINGS)) {
-    localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(INITIAL_BOOKINGS));
-  }
-  if (!localStorage.getItem(STORAGE_KEYS.WELLNESS)) {
-    localStorage.setItem(STORAGE_KEYS.WELLNESS, JSON.stringify(INITIAL_WELLNESS_APPOINTMENTS));
-  }
-  if (!localStorage.getItem(STORAGE_KEYS.ENQUIRIES)) {
-    localStorage.setItem(STORAGE_KEYS.ENQUIRIES, JSON.stringify(INITIAL_ENQUIRIES));
-  }
-  if (!localStorage.getItem(STORAGE_KEYS.PARTNERS)) {
-    localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(INITIAL_PARTNERS));
-  }
-  if (!localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS)) {
-    localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(INITIAL_NOTIFICATIONS));
+  // Migrate legacy session key if present
+  const legacyUser = localStorage.getItem(STORAGE_KEYS.LEGACY_CURRENT_USER);
+  if (legacyUser && !localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) {
+    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, legacyUser);
   }
 }
 
-// Authentication & Role-Based Session Helpers
+// Authentication & Account Dashboard Session Helpers
 
-export function getDashboardUrl(role) {
-  switch (role) {
+export function getDashboardUrl(accountType) {
+  switch (accountType) {
     case 'provider':
       return '/dashboard/provider';
     case 'admin':
@@ -336,27 +48,13 @@ export function getDashboardUrl(role) {
 }
 
 export function getUsers() {
-  if (typeof window === 'undefined') return DEFAULT_DEMO_ACCOUNTS;
-  initializeStorage();
+  if (typeof window === 'undefined') return [];
   const raw = localStorage.getItem(STORAGE_KEYS.USERS);
-  if (!raw) return DEFAULT_DEMO_ACCOUNTS;
+  if (!raw) return [];
   try {
-    const parsed = JSON.parse(raw);
-    // Ensure demo accounts always exist and are up to date
-    const merged = [...parsed];
-    DEFAULT_DEMO_ACCOUNTS.forEach((demo) => {
-      const exists = merged.some(
-        (u) =>
-          u.email.toLowerCase() === demo.email.toLowerCase() ||
-          (u.alternateEmails && u.alternateEmails.some((ae) => demo.alternateEmails.includes(ae)))
-      );
-      if (!exists) {
-        merged.unshift(demo);
-      }
-    });
-    return merged;
+    return JSON.parse(raw);
   } catch {
-    return DEFAULT_DEMO_ACCOUNTS;
+    return [];
   }
 }
 
@@ -367,135 +65,196 @@ export function getCurrentUser() {
     return null;
   }
   const user = localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || localStorage.getItem(STORAGE_KEYS.LEGACY_CURRENT_USER);
-  return user ? JSON.parse(user) : null;
+  if (!user) return null;
+  try {
+    return JSON.parse(user);
+  } catch {
+    localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+    localStorage.removeItem(STORAGE_KEYS.LEGACY_CURRENT_USER);
+    return null;
+  }
 }
 
-export function authenticateUser(email, password, expectedRole) {
-  if (typeof window === 'undefined') return { success: false, error: 'Browser environment required.' };
-
-  const cleanEmail = (email || '').trim().toLowerCase();
-  const cleanPass = password || '';
-
-  if (!cleanEmail) {
-    return { success: false, error: 'Email address is required.' };
-  }
-  if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
-    return { success: false, error: 'Please enter a valid email address.' };
-  }
-  if (!cleanPass) {
-    return { success: false, error: 'Password is required.' };
-  }
-
-  const users = getUsers();
-  const matchedUser = users.find((u) => {
-    const mainMatch = (u.email || '').toLowerCase() === cleanEmail;
-    const altMatch = Array.isArray(u.alternateEmails) && u.alternateEmails.some((ae) => ae.toLowerCase() === cleanEmail);
-    return mainMatch || altMatch;
-  });
-
-  if (!matchedUser) {
-    return {
-      success: false,
-      error: 'No account found with this email address. Please check your credentials or register.'
-    };
-  }
-
-  // Check role mismatch
-  const roleLabels = {
-    customer: 'Customer',
-    provider: 'Service Provider',
-    admin: 'Administrator'
-  };
-
-  if (matchedUser.role !== expectedRole) {
-    const userRoleLabel = roleLabels[matchedUser.role] || matchedUser.role;
-    const expectedRoleLabel = roleLabels[expectedRole] || expectedRole;
-    return {
-      success: false,
-      roleMismatch: true,
-      userRole: matchedUser.role,
-      error: `Role Mismatch: This email belongs to a ${userRoleLabel} account, not an ${expectedRoleLabel}. Please click the "${userRoleLabel} Login" tab above to proceed.`
-    };
-  }
-
-  // Check password
-  if (matchedUser.password !== cleanPass) {
-    return {
-      success: false,
-      error: 'Invalid password. Please check your password and try again.'
-    };
-  }
-
-  // Login successful
-  localStorage.removeItem('oneconnect_logged_out');
-  setCurrentUser(matchedUser);
-
-  return {
-    success: true,
-    user: matchedUser,
-    redirectUrl: getDashboardUrl(matchedUser.role)
-  };
+export async function authenticateUser(email, password) {
+  return await loginWithApi(email, password);
 }
 
-export function registerUser({ name, email, password, phone, role = 'customer', ...extra }) {
-  if (typeof window === 'undefined') return { success: false, error: 'Browser environment required.' };
-
-  const cleanEmail = (email || '').trim().toLowerCase();
-  if (!name || !name.trim()) {
-    return { success: false, error: 'Full legal name is required.' };
-  }
-  if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
-    return { success: false, error: 'Valid email address is required.' };
-  }
-  if (!password || password.length < 6) {
-    return { success: false, error: 'Password must be at least 6 characters long.' };
-  }
-
-  const users = getUsers();
-  const exists = users.some(
-    (u) => (u.email || '').toLowerCase() === cleanEmail ||
-           (Array.isArray(u.alternateEmails) && u.alternateEmails.some((ae) => ae.toLowerCase() === cleanEmail))
-  );
-
-  if (exists) {
-    return { success: false, error: 'An account with this email address already exists. Please sign in instead.' };
-  }
-
-  const newUser = {
-    id: `USR-${Date.now().toString(36).toUpperCase()}`,
-    name: name.trim(),
-    email: cleanEmail,
-    password,
-    phone: phone || '',
-    role,
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-    memberSince: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-    ...extra
-  };
-
-  const updatedUsers = [...users, newUser];
-  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(updatedUsers));
-  localStorage.removeItem('oneconnect_logged_out');
-  setCurrentUser(newUser);
-
-  return { success: true, user: newUser, redirectUrl: getDashboardUrl(role) };
+export async function registerUser({ name, email, password, phone }) {
+  return await registerCustomerWithApi({ name, email, phone, password });
 }
 
 export function logoutUser() {
   if (typeof window === 'undefined') return;
+  try {
+    fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+  } catch (e) {}
   localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
   localStorage.removeItem(STORAGE_KEYS.LEGACY_CURRENT_USER);
   localStorage.setItem('oneconnect_logged_out', 'true');
   notifyStorageChange();
 }
 
-export function switchRole(roleKey) {
-  if (typeof window === 'undefined') return;
-  const targetUser = DEMO_USERS[roleKey] || DEMO_USERS.customer;
-  localStorage.removeItem('oneconnect_logged_out');
-  localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(targetUser));
-  notifyStorageChange();
-  return targetUser;
+/**
+ * Common Login API Call - Connects to Supabase / Backend
+ * The backend automatically determines if the account is Customer, Provider, or Admin.
+ */
+export async function loginWithApi(email, password) {
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      return {
+        success: false,
+        isPendingProvider: data.isPendingProvider || false,
+        isRejectedProvider: data.isRejectedProvider || false,
+        status: data.status || null,
+        error: data.error || 'Authentication failed. Please verify your credentials.',
+      };
+    }
+
+    const appUser = {
+      ...data.user,
+      role: data.user.accountType, // Ensure compatibility with existing dashboard views
+      roles: data.user.roles || [data.user.accountType],
+    };
+
+    localStorage.removeItem('oneconnect_logged_out');
+    setCurrentUser(appUser);
+
+    return {
+      success: true,
+      user: appUser,
+      redirectUrl: data.redirectUrl || getDashboardUrl(data.user.accountType),
+    };
+  } catch (err) {
+    console.error('API login error:', err);
+    return {
+      success: false,
+      error: 'Unable to connect to authentication backend. Please check server status.',
+    };
+  }
+}
+
+/**
+ * Real-World Customer Registration API
+ */
+export async function registerCustomerWithApi({ name, email, phone, password }) {
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, phone, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      return {
+        success: false,
+        error: data.error || 'Registration failed.',
+      };
+    }
+
+    const appUser = {
+      ...data.user,
+      role: data.user.accountType,
+      roles: data.user.roles || [data.user.accountType],
+    };
+
+    localStorage.removeItem('oneconnect_logged_out');
+    setCurrentUser(appUser);
+
+    return {
+      success: true,
+      user: appUser,
+      redirectUrl: data.redirectUrl || '/dashboard/customer',
+    };
+  } catch (err) {
+    console.error('API register error:', err);
+    return {
+      success: false,
+      error: 'Unable to reach backend registration service.',
+    };
+  }
+}
+
+/**
+ * Real-World Provider Registration API
+ */
+export async function registerProviderWithApi(providerData) {
+  try {
+    const res = await fetch('/api/auth/provider-register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(providerData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      return {
+        success: false,
+        error: data.error || 'Provider registration failed.',
+      };
+    }
+
+    return {
+      success: true,
+      applicationStatus: data.applicationStatus || 'pending',
+      provider: data.provider,
+      message: data.message,
+    };
+  } catch (err) {
+    console.error('API provider register error:', err);
+    return {
+      success: false,
+      error: 'Unable to reach backend provider registration service.',
+    };
+  }
+}
+
+/**
+ * Verifies current session token against /api/users/me with automatic refresh on token expiry
+ */
+export async function syncSessionFromBackend() {
+  if (typeof window === 'undefined') return null;
+  try {
+    let res = await fetch('/api/users/me');
+
+    // If access token is expired (401), attempt to rotate refresh token
+    if (res.status === 401) {
+      const refreshRes = await fetch('/api/auth/refresh', { method: 'POST' });
+      if (refreshRes.ok) {
+        res = await fetch('/api/users/me');
+      }
+    }
+
+    if (!res.ok) {
+      return null;
+    }
+
+    const data = await res.json();
+    if (data.success && data.user) {
+      const appUser = {
+        ...data.user,
+        role: data.user.accountType,
+        roles: data.user.roles || [data.user.accountType],
+      };
+      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(appUser));
+      localStorage.removeItem('oneconnect_logged_out');
+      notifyStorageChange();
+      return appUser;
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
 }
 
 export function setCurrentUser(userObj) {
@@ -507,6 +266,16 @@ export function setCurrentUser(userObj) {
   localStorage.removeItem('oneconnect_logged_out');
   localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(userObj));
   notifyStorageChange();
+}
+
+export function switchRole(newRole) {
+  if (typeof window === 'undefined') return null;
+  const user = getCurrentUser();
+  if (!user || !user.roles || !user.roles.includes(newRole)) return null;
+  const updatedUser = { ...user, role: newRole, accountType: newRole };
+  localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(updatedUser));
+  notifyStorageChange();
+  return updatedUser;
 }
 
 export function getRememberedEmail() {
@@ -523,203 +292,192 @@ export function setRememberedEmail(email, shouldRemember) {
   }
 }
 
-// Bookings (Flights, Buses, Hotels)
-export function getBookings() {
-  if (typeof window === 'undefined') return INITIAL_BOOKINGS;
-  initializeStorage();
-  const raw = localStorage.getItem(STORAGE_KEYS.BOOKINGS);
-  return raw ? JSON.parse(raw) : INITIAL_BOOKINGS;
-}
-
-export function saveBooking(bookingData) {
-  if (typeof window === 'undefined') return null;
-  initializeStorage();
-  const bookings = getBookings();
-  const newBooking = {
-    ...bookingData,
-    id: bookingData.id || `BKG-${Date.now().toString(36).toUpperCase()}`,
-    bookedAt: new Date().toISOString(),
-    status: bookingData.status || 'Confirmed'
-  };
-  const updated = [newBooking, ...bookings];
-  localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(updated));
-
-  // Also push a notification
-  addNotification({
-    userId: bookingData.userId || 'USR-CUST-1',
-    title: `${bookingData.categoryTitle || 'Service'} Confirmed! 🎉`,
-    message: `Reference: ${newBooking.reference}. Total: ₹${newBooking.totalAmount?.toLocaleString()}`,
-    type: 'success'
-  });
-
-  notifyStorageChange();
-  return newBooking;
-}
-
-export function cancelBooking(bookingId) {
-  if (typeof window === 'undefined') return false;
-  const bookings = getBookings();
-  const updated = bookings.map((b) => {
-    if (b.id === bookingId) {
-      return { ...b, status: 'Cancelled', cancelledAt: new Date().toISOString() };
+// Auto-refreshing fetch: retries once on 401 after refreshing the access token
+export async function authFetch(url, options = {}) {
+  let res = await fetch(url, options);
+  if (res.status === 401) {
+    const refreshRes = await fetch('/api/auth/refresh', { method: 'POST' });
+    if (refreshRes.ok) {
+      res = await fetch(url, options);
     }
-    return b;
-  });
-  localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(updated));
-  notifyStorageChange();
-  return true;
-}
-
-// Wellness Appointments
-export function getWellnessAppointments() {
-  if (typeof window === 'undefined') return INITIAL_WELLNESS_APPOINTMENTS;
-  initializeStorage();
-  const raw = localStorage.getItem(STORAGE_KEYS.WELLNESS);
-  return raw ? JSON.parse(raw) : INITIAL_WELLNESS_APPOINTMENTS;
-}
-
-export function saveWellnessAppointment(aptData) {
-  if (typeof window === 'undefined') return null;
-  initializeStorage();
-  const appointments = getWellnessAppointments();
-
-  // Prevent duplicate demo appointments for same practitioner and slot
-  const isDuplicate = appointments.some(
-    (a) =>
-      a.practitionerId === aptData.practitionerId &&
-      a.date === aptData.date &&
-      a.timeSlot === aptData.timeSlot &&
-      a.status !== 'Declined' &&
-      a.status !== 'Cancelled'
-  );
-
-  if (isDuplicate) {
-    throw new Error('This time slot is already booked for this practitioner. Please select another slot.');
   }
-
-  const newApt = {
-    ...aptData,
-    id: aptData.id || `APT-WL-${Date.now().toString(36).toUpperCase()}`,
-    status: 'Pending', // Mandatory initial status
-    bookedAt: new Date().toISOString()
-  };
-
-  const updated = [newApt, ...appointments];
-  localStorage.setItem(STORAGE_KEYS.WELLNESS, JSON.stringify(updated));
-
-  addNotification({
-    userId: aptData.patientId || 'USR-CUST-1',
-    title: 'Wellness Request Sent 🌿',
-    message: `Request for ${newApt.practitionerName} on ${newApt.date} at ${newApt.timeSlot} is Pending acceptance.`,
-    type: 'info'
-  });
-
-  notifyStorageChange();
-  return newApt;
+  return res;
 }
 
-export function updateWellnessAppointmentStatus(aptId, newStatus) {
-  if (typeof window === 'undefined') return false;
-  const list = getWellnessAppointments();
-  let updatedApt = null;
-  const updated = list.map((a) => {
-    if (a.id === aptId) {
-      updatedApt = { ...a, status: newStatus, respondedAt: new Date().toISOString() };
-      return updatedApt;
-    }
-    return a;
-  });
-  localStorage.setItem(STORAGE_KEYS.WELLNESS, JSON.stringify(updated));
-
-  if (updatedApt) {
-    addNotification({
-      userId: updatedApt.patientId || 'USR-CUST-1',
-      title: `Wellness Appointment ${newStatus}! ${newStatus === 'Confirmed' ? '✅' : '❌'}`,
-      message: `${updatedApt.practitionerName} has ${newStatus.toLowerCase()} your session for ${updatedApt.date} at ${updatedApt.timeSlot}.`,
-      type: newStatus === 'Confirmed' ? 'success' : 'warning'
+// Bookings — Save to database via API
+export async function saveBooking(bookingData) {
+  try {
+    const res = await authFetch('/api/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        reference: bookingData.reference || `BKG-${Date.now().toString(36).toUpperCase()}`,
+        type: bookingData.type || 'flight',
+        categoryTitle: bookingData.categoryTitle || bookingData.type,
+        serviceName: bookingData.airline || bookingData.operator || bookingData.hotelName || bookingData.serviceName || '',
+        fromLocation: bookingData.fromCity || bookingData.from || null,
+        toLocation: bookingData.toCity || bookingData.to || null,
+        travelDate: bookingData.date || bookingData.checkInDate || null,
+        travelTime: bookingData.time || null,
+        details: bookingData,
+        totalAmount: bookingData.totalAmount || 0,
+        fareBreakdown: bookingData.fareBreakdown || {},
+        paymentMethod: bookingData.paymentMethod || 'Online Payment',
+        providerId: bookingData.providerId || null,
+        listingId: bookingData.listingId || null,
+        displayCurrency: bookingData.displayCurrency || 'INR',
+        exchangeRate: bookingData.exchangeRate || 1.0,
+        originalCurrency: 'INR',
+      }),
     });
-  }
-
-  notifyStorageChange();
-  return true;
-}
-
-// Property Enquiries (Kept strictly separate from ticket bookings)
-export function getPropertyEnquiries() {
-  if (typeof window === 'undefined') return INITIAL_ENQUIRIES;
-  initializeStorage();
-  const raw = localStorage.getItem(STORAGE_KEYS.ENQUIRIES);
-  return raw ? JSON.parse(raw) : INITIAL_ENQUIRIES;
-}
-
-export function savePropertyEnquiry(enqData) {
-  if (typeof window === 'undefined') return null;
-  initializeStorage();
-  const enquiries = getPropertyEnquiries();
-  const newEnq = {
-    ...enqData,
-    id: enqData.id || `ENQ-${Math.floor(10000 + Math.random() * 90000)}`,
-    status: 'Received',
-    createdAt: new Date().toISOString()
-  };
-  const updated = [newEnq, ...enquiries];
-  localStorage.setItem(STORAGE_KEYS.ENQUIRIES, JSON.stringify(updated));
-
-  addNotification({
-    userId: 'USR-CUST-1',
-    title: 'Property Enquiry Submitted 🏡',
-    message: `Reference: ${newEnq.id} for "${newEnq.propertyTitle}". The agent will contact you shortly.`,
-    type: 'info'
-  });
-
-  notifyStorageChange();
-  return newEnq;
-}
-
-// Partner Registrations & Admin Approval
-export function getPartners() {
-  if (typeof window === 'undefined') return INITIAL_PARTNERS;
-  initializeStorage();
-  const raw = localStorage.getItem(STORAGE_KEYS.PARTNERS);
-  return raw ? JSON.parse(raw) : INITIAL_PARTNERS;
-}
-
-export function savePartnerApplication(partnerData) {
-  if (typeof window === 'undefined') return null;
-  initializeStorage();
-  const partners = getPartners();
-  const newPartner = {
-    ...partnerData,
-    id: `PTR-${Math.floor(1000 + Math.random() * 9000)}`,
-    appliedDate: new Date().toISOString().split('T')[0],
-    status: 'Pending Verification'
-  };
-  const updated = [newPartner, ...partners];
-  localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(updated));
-  notifyStorageChange();
-  return newPartner;
-}
-
-export function updatePartnerStatus(partnerId, newStatus) {
-  if (typeof window === 'undefined') return false;
-  const partners = getPartners();
-  const updated = partners.map((p) => {
-    if (p.id === partnerId) {
-      return { ...p, status: newStatus, decisionDate: new Date().toISOString() };
+    const data = await res.json();
+    if (data.success) {
+      notifyStorageChange();
+      return { ...bookingData, id: data.booking.id, ...data.booking };
     }
-    return p;
-  });
-  localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(updated));
-  notifyStorageChange();
-  return true;
+    console.error('Save booking API error:', data.error);
+    alert('Booking save failed: ' + (data.error || 'Unknown error'));
+    return bookingData;
+  } catch (err) {
+    console.error('Save booking error:', err);
+    alert('Booking save failed: ' + err.message);
+    return bookingData;
+  }
 }
 
-// Notifications
+export async function cancelBooking(bookingId) {
+  try {
+    await authFetch('/api/bookings', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bookingId, status: 'Cancelled' }),
+    });
+    notifyStorageChange();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Wellness Appointments — Save to database via API
+export async function saveWellnessAppointment(aptData) {
+  try {
+    const res = await authFetch('/api/wellness', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        practitionerName: aptData.practitionerName,
+        specialization: aptData.specialization,
+        date: aptData.date,
+        timeSlot: aptData.timeSlot,
+        consultationMode: aptData.consultationMode,
+        duration: aptData.duration,
+        price: aptData.price,
+        patientName: aptData.patientName,
+        patientEmail: aptData.patientEmail,
+        patientPhone: aptData.patientPhone,
+        notes: aptData.notes,
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      // Also create a booking entry so provider sees it in their Bookings tab
+      try {
+        await saveBooking({
+          type: 'wellness',
+          categoryTitle: 'Wellness Appointment',
+          reference: `WEL-${Date.now().toString(36).toUpperCase()}`,
+          serviceName: aptData.practitionerName || '',
+          travelDate: aptData.date,
+          time: aptData.timeSlot,
+          totalAmount: aptData.price || 0,
+          paymentMethod: 'Online Payment',
+          providerId: aptData.providerId || null,
+          listingId: aptData.listingId || null,
+          contactEmail: aptData.patientEmail || '',
+          contactName: aptData.patientName || '',
+        });
+      } catch (bookingErr) {
+        console.error('Wellness booking entry error:', bookingErr);
+      }
+      notifyStorageChange();
+      return { ...aptData, id: data.appointment.id };
+    }
+    throw new Error(data.error || 'Failed to save appointment');
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function updateWellnessAppointmentStatus(aptId, newStatus) {
+  try {
+    await authFetch('/api/wellness', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointmentId: aptId, status: newStatus }),
+    });
+    notifyStorageChange();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Property Enquiries — Save to database via API
+export async function savePropertyEnquiry(enqData) {
+  try {
+    const res = await authFetch('/api/enquiries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        propertyTitle: enqData.propertyTitle,
+        propertyLocation: enqData.propertyLocation,
+        purpose: enqData.purpose,
+        priceDisplay: enqData.priceDisplay,
+        enquiryType: enqData.enquiryType,
+        preferredDate: enqData.preferredDate,
+        preferredTime: enqData.preferredTime,
+        message: enqData.message,
+        agentName: enqData.agentName,
+        agentEmail: enqData.agentEmail,
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      notifyStorageChange();
+      return { ...enqData, id: data.enquiry.id };
+    }
+    return enqData;
+  } catch (err) {
+    console.error('Save enquiry error:', err);
+    return enqData;
+  }
+}
+
+// Partners — fetched from API (admin dashboard handles this)
+export function getPartners() {
+  return [];
+}
+
+export function savePartnerApplication() {
+  // No longer saving to localStorage — partner registration goes through API
+  return null;
+}
+
+export function updatePartnerStatus() {
+  return false;
+}
+
+// Notifications — kept in localStorage (lightweight, session-specific)
 export function getNotifications() {
-  if (typeof window === 'undefined') return INITIAL_NOTIFICATIONS;
-  initializeStorage();
+  if (typeof window === 'undefined') return [];
   const raw = localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS);
-  return raw ? JSON.parse(raw) : INITIAL_NOTIFICATIONS;
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
 }
 
 export function addNotification({ userId, title, message, type = 'info' }) {
@@ -727,10 +485,7 @@ export function addNotification({ userId, title, message, type = 'info' }) {
   const notifs = getNotifications();
   const newNotif = {
     id: `NOTIF-${Date.now()}`,
-    userId,
-    title,
-    message,
-    type,
+    userId, title, message, type,
     timestamp: new Date().toISOString(),
     read: false
   };
@@ -741,7 +496,12 @@ export function addNotification({ userId, title, message, type = 'info' }) {
 export function markNotificationRead(id) {
   if (typeof window === 'undefined') return;
   const notifs = getNotifications();
-  const updated = notifs.map((n) => (n.id === id ? { ...n, read: true } : n));
+  const updated = notifs.map(n => (n.id === id ? { ...n, read: true } : n));
   localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(updated));
   notifyStorageChange();
 }
+
+// Legacy getters for backward compatibility (return empty arrays)
+export function getBookings() { return []; }
+export function getWellnessAppointments() { return []; }
+export function getPropertyEnquiries() { return []; }

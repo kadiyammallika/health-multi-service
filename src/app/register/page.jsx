@@ -3,12 +3,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Sparkles, ArrowRight, UserCheck, Briefcase, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { registerUser } from '@/services/storage';
+import { Sparkles, ArrowRight, Eye, EyeOff, AlertCircle, User, Mail, Phone, Lock, ShieldCheck, Plane, Bus, Hotel, Leaf, Heart } from 'lucide-react';
+import { registerCustomerWithApi } from '@/services/storage';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [accountType, setAccountType] = useState('customer');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -19,14 +18,9 @@ export default function RegisterPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setErrorMessage('');
-
-    if (accountType === 'provider') {
-      router.push('/partner/register');
-      return;
-    }
 
     if (password !== confirmPassword) {
       setErrorMessage('Passwords do not match. Please re-enter your password.');
@@ -40,12 +34,11 @@ export default function RegisterPage() {
 
     setIsSubmitting(true);
 
-    const result = registerUser({
+    const result = await registerCustomerWithApi({
       name: fullName,
       email,
       password,
       phone,
-      role: 'customer'
     });
 
     setIsSubmitting(false);
@@ -55,178 +48,255 @@ export default function RegisterPage() {
       return;
     }
 
-    // Success! Redirect to customer dashboard
-    router.push('/dashboard/customer');
+    router.push(result.redirectUrl || '/dashboard/customer');
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-3xl border border-slate-100 shadow-xl">
-        <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2 group">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-              <Sparkles className="w-6 h-6 text-teal-200" />
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-teal-50 flex">
+      {/* Left Panel - Branding (hidden on mobile) */}
+      <div className="hidden lg:flex lg:w-[48%] relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-teal-600 items-center justify-center p-12">
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-white/5 rounded-full" />
+        <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-white/5 rounded-full" />
+        <div className="absolute top-1/4 right-12 w-48 h-48 bg-teal-400/10 rounded-full blur-2xl" />
+
+        <div className="relative z-10 max-w-md text-white space-y-8">
+          <div className="flex items-center gap-3">
+            <div className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/20">
+              <Sparkles className="w-7 h-7 text-teal-200" />
             </div>
-            <span className="text-2xl font-black tracking-tight text-slate-900">
-              One<span className="text-indigo-600">Connect</span>
+            <span className="text-3xl font-black tracking-tight">
+              One<span className="text-teal-300">Connect</span>
             </span>
-          </Link>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight pt-1">Create an Account</h2>
-          <p className="text-xs text-slate-400">Join our multi-service living, wellness & travel network</p>
-        </div>
-
-        {/* Account Type Selector */}
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              setAccountType('customer');
-              setErrorMessage('');
-            }}
-            className={`p-3 rounded-2xl border text-xs font-bold transition flex flex-col items-center gap-1 ${
-              accountType === 'customer'
-                ? 'border-indigo-600 bg-indigo-50 text-indigo-700 shadow-xs'
-                : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-            }`}
-          >
-            <UserCheck className="w-4 h-4" />
-            <span>Customer Account</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setAccountType('provider');
-              setErrorMessage('');
-            }}
-            className={`p-3 rounded-2xl border text-xs font-bold transition flex flex-col items-center gap-1 ${
-              accountType === 'provider'
-                ? 'border-teal-600 bg-teal-50 text-teal-700 shadow-xs'
-                : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-            }`}
-          >
-            <Briefcase className="w-4 h-4" />
-            <span>Service Provider</span>
-          </button>
-        </div>
-
-        {errorMessage && (
-          <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2 animate-fadeIn">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{errorMessage}</span>
           </div>
-        )}
 
-        {accountType === 'provider' ? (
-          <div className="p-5 bg-teal-50/70 border border-teal-200 rounded-2xl text-center space-y-3">
-            <p className="text-xs text-teal-900 leading-relaxed">
-              Service providers (Airlines, bus operators, hotels, wellness practitioners, and real estate agents) register via the dedicated Partner Onboarding Portal with document verification.
+          <div className="space-y-4">
+            <h2 className="text-3xl font-extrabold leading-tight">
+              Join millions of<br />
+              happy users
+            </h2>
+            <p className="text-indigo-200 text-sm leading-relaxed">
+              Create your free account and start booking flights, buses, hotels, health & healing sessions, and more.
             </p>
-            <Link
-              href="/partner/register"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-xs transition"
-            >
-              <span>Go to Partner Onboarding</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+          </div>
+
+          <div className="flex flex-wrap gap-3 pt-2">
+            {[
+              { icon: Plane, label: 'Flights' },
+              { icon: Bus, label: 'Buses' },
+              { icon: Hotel, label: 'Hotels' },
+              { icon: Leaf, label: 'Health & Healing' },
+              { icon: Heart, label: 'Properties' },
+            ].map(({ icon: Icon, label }) => (
+              <div
+                key={label}
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-xs font-medium text-white/90"
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {label}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 pt-6 text-indigo-200 text-xs">
+            <ShieldCheck className="w-4 h-4 text-teal-300" />
+            <span>Your data is safe and secure with us</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Panel - Register Form */}
+      <div className="flex-1 flex items-center justify-center px-5 py-10 sm:px-8">
+        <div className="w-full max-w-[420px] space-y-6">
+          {/* Mobile Logo */}
+          <div className="lg:hidden text-center">
+            <Link href="/login" className="inline-flex items-center gap-2.5">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                <Sparkles className="w-5.5 h-5.5 text-teal-200" />
+              </div>
+              <span className="text-2xl font-black tracking-tight text-slate-900">
+                One<span className="text-indigo-600">Connect</span>
+              </span>
             </Link>
           </div>
-        ) : (
-          <form onSubmit={handleRegister} className="space-y-4 text-xs">
-            <div>
-              <label className="block font-semibold text-slate-700 mb-1">Full Legal Name</label>
-              <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="e.g. Alex Morgan"
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
-                required
-              />
-            </div>
 
-            <div>
-              <label className="block font-semibold text-slate-700 mb-1">Email Address</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="alex.morgan@example.com"
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
-                required
-              />
-            </div>
+          {/* Heading */}
+          <div className="space-y-1.5">
+            <h1 className="text-2xl sm:text-[28px] font-extrabold text-slate-900 tracking-tight">
+              Create your account
+            </h1>
+            <p className="text-sm text-slate-500">
+              Sign up to get started with OneConnect
+            </p>
+          </div>
 
-            <div>
-              <label className="block font-semibold text-slate-700 mb-1">Phone Number</label>
-              <input
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+91 98765 43210"
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
-                required
-              />
+          {/* Error */}
+          {errorMessage && (
+            <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[13px] flex items-start gap-2.5 animate-fadeIn">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div>
+                <strong className="block font-semibold text-sm">Registration failed</strong>
+                <span>{errorMessage}</span>
+              </div>
             </div>
+          )}
 
-            <div>
-              <label className="block font-semibold text-slate-700 mb-1">Create Password</label>
+          {/* Form */}
+          <form onSubmit={handleRegister} className="space-y-4">
+            {/* Full Name */}
+            <div className="space-y-1.5">
+              <label className="block text-[13px] font-semibold text-slate-700">Full name</label>
               <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <User className="w-[18px] h-[18px]" />
+                </div>
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Enter your full name"
+                  className="w-full pl-11 pr-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 focus:bg-white transition-all"
+                  required
+                  autoComplete="name"
+                />
+              </div>
+            </div>
+
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label className="block text-[13px] font-semibold text-slate-700">Email address</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Mail className="w-[18px] h-[18px]" />
+                </div>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  className="w-full pl-11 pr-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 focus:bg-white transition-all"
+                  required
+                  autoComplete="email"
+                />
+              </div>
+            </div>
+
+            {/* Phone */}
+            <div className="space-y-1.5">
+              <label className="block text-[13px] font-semibold text-slate-700">Phone number</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Phone className="w-[18px] h-[18px]" />
+                </div>
+                <input
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className="w-full pl-11 pr-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 focus:bg-white transition-all"
+                  required
+                  autoComplete="tel"
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div className="space-y-1.5">
+              <label className="block text-[13px] font-semibold text-slate-700">Password</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="w-[18px] h-[18px]" />
+                </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 6 characters"
-                  className="w-full pl-3 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white font-mono"
+                  className="w-full pl-11 pr-12 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 focus:bg-white transition-all"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition"
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
                 </button>
               </div>
             </div>
 
-            <div>
-              <label className="block font-semibold text-slate-700 mb-1">Confirm Password</label>
+            {/* Confirm Password */}
+            <div className="space-y-1.5">
+              <label className="block text-[13px] font-semibold text-slate-700">Confirm password</label>
               <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="w-[18px] h-[18px]" />
+                </div>
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-enter password"
-                  className="w-full pl-3 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white font-mono"
+                  className="w-full pl-11 pr-12 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 focus:bg-white transition-all"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition"
                 >
-                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showConfirmPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
                 </button>
               </div>
             </div>
 
+            {/* Terms */}
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              By creating an account, you agree to our{' '}
+              <span className="text-indigo-600 font-medium">Terms of Service</span>{' '}
+              and{' '}
+              <span className="text-indigo-600 font-medium">Privacy Policy</span>
+            </p>
+
+            {/* Submit */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-1.5"
+              className="w-full py-3 px-4 rounded-xl text-white font-bold text-sm bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 active:scale-[0.98] shadow-lg shadow-indigo-600/25 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
             >
-              <span>{isSubmitting ? 'Registering...' : 'Complete Customer Registration'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              {isSubmitting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Creating account...</span>
+                </>
+              ) : (
+                <>
+                  <span>Create account</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </form>
-        )}
 
-        <p className="text-center text-xs text-slate-500">
-          Already registered?{' '}
-          <Link href="/login" className="text-indigo-600 font-bold hover:underline">
-            Sign in here
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-gradient-to-br from-indigo-50 via-white to-teal-50 lg:bg-white px-3 text-xs text-slate-400">
+                Already have an account?
+              </span>
+            </div>
+          </div>
+
+          {/* Sign in link */}
+          <Link
+            href="/login"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-sm font-semibold text-slate-700 transition-all hover:border-slate-300"
+          >
+            Sign in instead
           </Link>
-        </p>
+        </div>
       </div>
     </div>
   );

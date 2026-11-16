@@ -14,6 +14,8 @@ export default function Badge({ status, size = 'md' }) {
         return 'bg-rose-50 text-rose-700 border-rose-200 ring-rose-500/20';
       case 'completed':
         return 'bg-indigo-50 text-indigo-700 border-indigo-200 ring-indigo-500/20';
+      case 'received':
+        return 'bg-sky-50 text-sky-700 border-sky-200 ring-sky-500/20';
       default:
         return 'bg-slate-50 text-slate-700 border-slate-200 ring-slate-500/20';
     }

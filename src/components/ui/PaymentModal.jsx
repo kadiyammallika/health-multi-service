@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CreditCard, QrCode, Building, CheckCircle2, AlertTriangle, ShieldCheck, Lock, Loader2, X } from 'lucide-react';
+import { useCurrency } from '@/components/ui/CurrencyProvider';
 
 export default function PaymentModal({
   isOpen,
@@ -11,6 +12,7 @@ export default function PaymentModal({
   breakdown = {},
   onPaymentSuccess,
 }) {
+  const { formatPrice } = useCurrency();
   const [method, setMethod] = useState('card'); // 'card', 'upi', 'netbanking', 'instant'
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -23,6 +25,17 @@ export default function PaymentModal({
   const [cardCvv, setCardCvv] = useState('888');
   const [cardHolder, setCardHolder] = useState('Alex Morgan');
   const [upiId, setUpiId] = useState('alex@okhdfcbank');
+
+  // Reset state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setMethod('card');
+      setIsProcessing(false);
+      setIsSuccess(false);
+      setSimulatedFailure(false);
+      setErrorMsg('');
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -81,7 +94,7 @@ export default function PaymentModal({
                 <CheckCircle2 className="w-10 h-10" />
               </div>
               <h4 className="text-2xl font-bold text-slate-900">Payment Successful!</h4>
-              <p className="text-sm text-slate-600 mt-1">₹{amount?.toLocaleString()} received via Simulated Gateway</p>
+              <p className="text-sm text-slate-600 mt-1">{formatPrice(amount)} received via Simulated Gateway</p>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 mt-4 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold">
                 <ShieldCheck className="w-4 h-4" /> Generating confirmation and booking voucher...
               </div>
@@ -100,13 +113,13 @@ export default function PaymentModal({
               <div className="p-4 bg-indigo-50/60 rounded-xl border border-indigo-100 flex items-center justify-between">
                 <div>
                   <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Payable</span>
-                  <div className="text-2xl font-black text-indigo-950">₹{amount?.toLocaleString()}</div>
+                  <div className="text-2xl font-black text-indigo-950">{formatPrice(amount)}</div>
                 </div>
                 <div className="text-right text-xs text-slate-500 space-y-0.5">
-                  {breakdown.baseFare && <div>Base: ₹{breakdown.baseFare?.toLocaleString()}</div>}
-                  {breakdown.taxes && <div>Taxes: ₹{breakdown.taxes?.toLocaleString()}</div>}
-                  {breakdown.convenienceFee && <div>Fee: ₹{breakdown.convenienceFee?.toLocaleString()}</div>}
-                  {breakdown.resortFee && <div>Resort: ₹{breakdown.resortFee?.toLocaleString()}</div>}
+                  {breakdown.baseFare && <div>Base: {formatPrice(breakdown.baseFare)}</div>}
+                  {breakdown.taxes && <div>Taxes: {formatPrice(breakdown.taxes)}</div>}
+                  {breakdown.convenienceFee && <div>Fee: {formatPrice(breakdown.convenienceFee)}</div>}
+                  {breakdown.resortFee && <div>Resort: {formatPrice(breakdown.resortFee)}</div>}
                 </div>
               </div>
 
@@ -262,7 +275,7 @@ export default function PaymentModal({
                   onClick={handlePayNow}
                   className="flex-1 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-md shadow-indigo-600/30 transition flex items-center justify-center gap-2"
                 >
-                  <span>Pay ₹{amount?.toLocaleString()}</span>
+                  <span>Pay {formatPrice(amount)}</span>
                   <Lock className="w-4 h-4" />
                 </button>
               </div>
