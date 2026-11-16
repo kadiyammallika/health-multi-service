@@ -9,6 +9,7 @@ import AdminLayout from './AdminLayout';
 
 const AUTH_PAGES = ['/login', '/register', '/partner/register', '/reset-password'];
 const PROTECTED_ROUTES = ['/dashboard', '/bookings'];
+const LOGIN_REQUIRED_ROUTES = ['/']; // Root page requires login
 
 export default function AppShell({ children }) {
   const pathname = usePathname();
@@ -44,9 +45,39 @@ export default function AppShell({ children }) {
     (p) => pathname === p || pathname.startsWith(p + '/')
   );
 
+  const isLoginRequiredRoute = LOGIN_REQUIRED_ROUTES.includes(pathname);
+
   useEffect(() => {
     if (isAuthPage) {
       setAuthState('skip');
+      return;
+    }
+
+    // Root page and other login-required routes: redirect to login if not authenticated
+    if (isLoginRequiredRoute && !isProtectedRoute) {
+      const user = getCurrentUser();
+      if (user) {
+        setAuthState('public');
+        setCurrentUser(user);
+      } else {
+        // Check if explicitly logged out
+        const loggedOut = typeof window !== 'undefined' && localStorage.getItem('oneconnect_logged_out') === 'true';
+        if (loggedOut) {
+          router.replace('/login');
+          return;
+        }
+        // Try session recovery before redirecting
+        syncSessionFromBackend().then((recovered) => {
+          if (recovered) {
+            setAuthState('public');
+            setCurrentUser(getCurrentUser());
+          } else {
+            router.replace('/login');
+          }
+        }).catch(() => {
+          router.replace('/login');
+        });
+      }
       return;
     }
 
@@ -114,7 +145,7 @@ export default function AppShell({ children }) {
       cancelled = true;
       window.removeEventListener('auralife_storage_update', handleStorageUpdate);
     };
-  }, [pathname, isAuthPage, isProtectedRoute, router]);
+  }, [pathname, isAuthPage, isProtectedRoute, isLoginRequiredRoute, router]);
 
   // Listen for user changes (login/logout) to update layout
   useEffect(() => {

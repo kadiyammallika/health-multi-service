@@ -41,3 +41,6 @@ next-env.d.ts
 # nia-ide: managed by Nia IDE
 .nia/
 .claude/
+
+.vercel
+.env*

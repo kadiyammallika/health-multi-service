@@ -62,8 +62,8 @@ export default function CustomerDashboardPage() {
 
   useEffect(() => {
     fetchData();
-    // Auto-refresh every 30 seconds to pick up admin approval changes
-    const interval = setInterval(() => fetchData(true), 30000);
+    // Auto-refresh every 10 seconds to pick up admin approval changes quickly
+    const interval = setInterval(() => fetchData(true), 10000);
     return () => clearInterval(interval);
   }, []);
 
